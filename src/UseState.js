@@ -6,10 +6,10 @@ function UseState({name}){
     const [state, setState] = useState({
         value: '',
         error: false,
-        loading: false
+        loading: false,
+        deleted: false,
+        confirmed: false,
     })
-
-    console.log(state)
 
     useEffect(() => {
         console.log('Empezando el efecto')
@@ -22,7 +22,9 @@ function UseState({name}){
                     setState({
                         ...state,
                         error: false,
-                        loading: false})
+                        loading: false,
+                        confirmed: true
+                    })
                 } else{
                     setState({
                         ...state,
@@ -41,6 +43,8 @@ function UseState({name}){
 
         console.log('Terminando el efecto')
     }, [state.loading])
+
+if (!state.deleted && !state.confirmed) {
     return (
         <div>
             <h2>
@@ -50,7 +54,7 @@ function UseState({name}){
                 Please enter the security code.
             </p>
 
-            {state.error && (
+            {(state.error && !state.loading) && (
                 <p>El código es incorrecto</p>
             )}
             {state.loading && (
@@ -69,9 +73,50 @@ function UseState({name}){
                 onClick={() => setState({
                     ...state,
                     loading: true})}
-            >Verify</button>
+            >
+                Verify
+            </button>
         </div>
     );
+} else if(!!state.confirmed && !state.deleted){
+    return(
+        <>
+        <p>
+            Pedimos confirmación. Estás seguro de eliminar?</p>
+        <button onClick={() =>{
+            setState({
+                ...state,
+                deleted:true
+            })
+        }}>
+            Sí, eliminar</button>
+        <button onClick={() =>{
+            setState({
+                ...state,
+                confirmed: false,
+                value: ''
+            })
+        }}>
+            No, me arrepentí</button>
+        </>
+    );
+} else {
+    return(
+        <>
+            <p>Eliminado con éxito</p>
+            <button onClick={() =>{
+            setState({
+                ...state,
+                deleted: false,
+                confirmed:false,
+                value: ''
+            })
+        }}>
+            Deshacer cambios</button>
+        </>
+    )
+}
+
 }
 
 export {UseState};
