@@ -1,11 +1,14 @@
 import React from "react";
 import { Loading } from "./Loading/Loading";
 
+const SECURITY_CODE ='paradigma'
+
 class ClassState extends React.Component{
     constructor(){
         super();
         
         this.state = {
+            value: '',
             error: false,
             loading: false,
         };
@@ -14,7 +17,13 @@ class ClassState extends React.Component{
         console.log('actualización')
         if(!!this.state.loading){
             setTimeout(()=>{
-                console.log('Empezando validación')                
+                console.log('Empezando validación')    
+                if(SECURITY_CODE === this.state.value){
+                    this.setState({error: false, loading: false});
+                } else{
+                    this.setState({error: true, loading: false});
+
+                }            
                 this.setState({ loading: false})
                 console.log('Terminando validación')
             }, 3000)
@@ -23,7 +32,7 @@ class ClassState extends React.Component{
 
 
     render(){
-
+const {error, loading} = this.state
         return(
         <div>
             <h2>
@@ -32,15 +41,21 @@ class ClassState extends React.Component{
             <p>
                 Please enter the security code.
             </p>
-            {this.state.error && (
+            {error && (
                 <p>El código es incorrecto</p>
             )}
-            {this.state.loading && (
+            {loading && (
                <Loading/>
             )}
-            <input placeholder="Security Code"/>
+            <input 
+                placeholder="Security Code"
+                onChange={(event) => {
+                    this.setState({value: event.target.value})
+                    }}
+                />
+                
             <button
-                onClick={() => this.setState({loading: !this.state.loading})}
+                onClick={() => this.setState({loading: true})}
             >Verify</button>
         </div>
         );

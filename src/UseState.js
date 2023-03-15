@@ -12,7 +12,8 @@ function UseState({name}){
         console.log('Empezando el efecto')
 
         if(!!loading){
-            setError(false)
+            setError(false)                    
+
             setTimeout(()=>{
                 console.log('Empezando validación')       
                 if(value === SECURITY_CODE){
@@ -52,10 +53,7 @@ function UseState({name}){
                 }}
                 />
             <button
-                onClick={() => {
-                    setLoading(!loading)
-                    setError(false  )                    
-                }}
+                onClick={() => setLoading(!loading)}
             >Verify</button>
         </div>
     );
