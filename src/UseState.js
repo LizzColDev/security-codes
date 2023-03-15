@@ -3,33 +3,44 @@ import React, { useEffect, useState } from "react";
 const SECURITY_CODE ='paradigma'
 
 function UseState({name}){
-    const [value, setValue] = useState('')
-    const [error, setError] = useState(false);
-    const [loading, setLoading] = useState(false);
-    console.log(value)
+    const [state, setState] = useState({
+        value: '',
+        error: false,
+        loading: false
+    })
+
+    console.log(state)
 
     useEffect(() => {
         console.log('Empezando el efecto')
 
-        if(!!loading){
-            setError(false)                    
+        if(!!state.loading){
 
             setTimeout(()=>{
                 console.log('Empezando validación')       
-                if(value === SECURITY_CODE){
-                    setLoading(false);
+                if(state.value === SECURITY_CODE){
+                    setState({
+                        ...state,
+                        error: false,
+                        loading: false})
                 } else{
-                    setLoading(false)
-                    setError(true)
+                    setState({
+                        ...state,
+                        loading: false})
+                    setState({
+                        ...state,
+                        error: true,
+                        loading:false
+                    })
                 }
-                setLoading(false)
+
                 console.log('Terminando validación')
             }, 3000)
         }
 
 
         console.log('Terminando el efecto')
-    }, [loading])
+    }, [state.loading])
     return (
         <div>
             <h2>
@@ -39,21 +50,25 @@ function UseState({name}){
                 Please enter the security code.
             </p>
 
-            {error && (
+            {state.error && (
                 <p>El código es incorrecto</p>
             )}
-            {loading && (
+            {state.loading && (
                 <p>Cargando ...</p>
             )}
             <input 
                 placeholder="Security Code"
-                value={value}
+                value={state.value}
                 onChange={event=>{
-                    setValue(event.target.value)    
+                    setState({
+                        ...state,
+                        value: event.target.value})
                 }}
                 />
             <button
-                onClick={() => setLoading(!loading)}
+                onClick={() => setState({
+                    ...state,
+                    loading: true})}
             >Verify</button>
         </div>
     );
