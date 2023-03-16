@@ -5,6 +5,16 @@ const SECURITY_CODE ='paradigma'
 function UseReducer({name}){
     const [state, dispatch] = useReducer(reducer, initialState);
 
+    const onConfirm = ()=> dispatch({ type: actionTypes.confirm})
+    const onError = () => dispatch({ type: actionTypes.error});
+    const onCheck = () => dispatch({ type: actionTypes.check})
+    const onDelete=()=> dispatch({ type: actionTypes.delete})
+    const onReset=()=> dispatch({ type: actionTypes.reset})
+        
+    const onWrite = (event) =>{
+        dispatch({ type: actionTypes.write, payload:event.target.value})
+    }
+
     useEffect(() => {
         console.log('Empezando el efecto')
 
@@ -13,13 +23,9 @@ function UseReducer({name}){
             setTimeout(()=>{
                 console.log('Empezando validación')       
                 if(state.value === SECURITY_CODE){
-                    dispatch({
-                        type: 'CONFIRM'
-                    });
+                    onConfirm();
                 } else{
-                    dispatch({
-                        type: 'ERROR'
-                    });
+                    onError();
                 }
 
                 console.log('Terminando validación')
@@ -49,15 +55,10 @@ if (!state.deleted && !state.confirmed) {
             <input 
                 placeholder="Security Code"
                 value={state.value}
-                onChange={(event)=>{
-                    dispatch({ type: 'WRITE', payload:event.target.value})
-                    // onWrite(event.target.value)
-                }}
+                onChange={onWrite}
                 />
             <button
-                onClick={() => 
-                    dispatch({type: 'CHECK'})
-                }
+                onClick={onCheck}
             >
                 Verify
             </button>
@@ -68,13 +69,9 @@ if (!state.deleted && !state.confirmed) {
         <>
         <p>
             Pedimos confirmación. Estás seguro de eliminar?</p>
-        <button onClick={() =>{
-            dispatch({type: 'DELETE'})
-        }}>
+        <button onClick={onDelete}>
             Sí, eliminar</button>
-        <button onClick={() =>{
-            dispatch({type: 'RESET'})
-        }}>
+        <button onClick={onReset}>
             No, me arrepentí</button>
         </>
     );
@@ -82,9 +79,7 @@ if (!state.deleted && !state.confirmed) {
     return(
         <>
             <p>Eliminado con éxito</p>
-            <button onClick={() =>{
-            dispatch({type: 'RESET'})
-        }}>
+            <button onClick={onReset}>
             Deshacer cambios</button>
         </>
     )
@@ -101,6 +96,14 @@ const initialState = {
     confirmed: false,
 }
 
+const actionTypes = {
+    confirm: 'CONFIRM',
+    write: 'WRITE',
+    error: 'ERROR',
+    check: 'CHECK',
+    delete: 'DELETE',
+    reset: 'RESET',
+}
 const reducerObject = (state, payload) => ({
     'CONFIRM':{
         ...state,
